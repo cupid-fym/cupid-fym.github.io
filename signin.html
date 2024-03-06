@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" href="favicon/heart.png" type="image/x-icon">
+    <link rel="stylesheet" href="css\signin.css">
+</head>
+<body>
+    <section class="hero">
+  
+        <div class="box">
+          
+          <div class="square" style="--i:0;"></div>
+          <div class="square" style="--i:1;"></div>
+          <div class="square" style="--i:2;"></div>
+          <div class="square" style="--i:3;"></div>
+          <div class="square" style="--i:4;"></div>
+          <div class="square" style="--i:5;"></div>
+          
+         <div class="container"> 
+          <div class="form"> 
+            <center><h2>Login</h2></center> 
+            <form method="post">
+              <div class="inputBx">
+                <input type="text" required="required" name="rollNo" class="input-field" >
+                <span>Roll No.</span>
+                <i class="fas fa-user-circle"></i>
+              </div>
+              <div class="inputBx password">
+                <input id="password-input" type="password" name="password" required="required" class="input-field" >
+                <span>Password</span>
+                <a href="#" class="password-control" onclick="return show_hide_password(this);"></a>
+                <i class="fas fa-key"></i>
+              </div>
+              <div class="error"></div>
+              <div class="inputBx">
+                <input class="ipbtn" type="submit" value="Log in" >   
+              </div>
+            </form>
+            <div class="foot-notes">
+              <p>Don't have an account <a href="signup.html">Sign Up</a></p>
+              <a href="index.html"><button class="home" type="button" >Home</button></a>
+            </div>
+          </div>
+        </div>
+        </div>
+      </section>
+
+    <script>
+        function show_hide_password(target){
+        var input = document.getElementById('password-input');
+        if (input.getAttribute('type') == 'password') {
+            target.classList.add('view');
+            input.setAttribute('type', 'text');
+        } else {
+            target.classList.remove('view');
+            input.setAttribute('type', 'password');
+        }
+        return false;
+    }
+
+    document.querySelector('form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = {
+          rollNo: Number(this.rollNo.value),
+          password: this.password.value
+        };
+        
+        fetch('https://1b63-20-193-147-51.ngrok-free.app/users/signin', {
+            method: 'POST',
+            headers: {
+              'ngrok-skip-browser-warning': 'true',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(async function(res) {
+          data = await res.json();
+          if (res.status === 200) {
+            localStorage.setItem('token', JSON.stringify(data.token));
+            localStorage.setItem('user', JSON.stringify(data.user));
+            window.location.href = 'users.html';
+          } else {
+            if(data.message == undefined) {
+              data.message = '*Something went wrong.';
+            }
+            document.querySelector('.error').textContent = '*Invalid Roll No. or Password';
+          }
+        })
+    });
+    </script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>    
+</body>
+</html>
